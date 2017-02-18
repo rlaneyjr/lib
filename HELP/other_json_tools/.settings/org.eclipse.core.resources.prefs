@@ -1,0 +1,14 @@
+eclipse.preferences.version=1
+encoding//src/jbind1.py=utf-8
+encoding//src/jbindzips.py=utf-8
+encoding//src/jdedupe.py=utf-8
+encoding//src/jfetch.py=utf-8
+encoding//src/jfetch_sdwis_json.py=utf-8
+encoding//src/jmakecsv.py=utf-8
+encoding//src/jmakecsv_vios.py=utf-8
+encoding//src/jmerge.py=utf-8
+encoding//src/jpretty.py=utf-8
+encoding//src/jprofile.py=utf-8
+encoding//src/jscan.py=utf-8
+encoding//src/proc_sdwis_json.py=utf-8
+encoding//src/sdwis/sdwis.py=utf-8
