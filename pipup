@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+
+
+pips="appdirs appnope args astroid autonetkit awscli backports-abc backports.functools-lru-cache backports.shutil-get-terminal-size backports.ssl-match-hostname BeautifulSoup beautifulsoup4 blessings blindspin botocore bpython bs4 certifi cffi click click-completion clint colorama configobj configparser crayons crochet cryptography curtsies Cython decorator delegator.py docker-py docker-pycreds docutils enum34 envoy Exscript funcsigs futures gitdb2 GitPython gnureadline graphviz greenlet gtextfsm html5lib idna ipaddress IPy ipython ipython-genutils isort Jinja2 jmespath json-tools lazy-object-proxy legit lxml Mako Markdown MarkupSafe mccabe meld3 mock nose packaging paramiko parse pathlib pathlib2 pbr pep8 pew pexpect pickleshare Pillow pip pip-purge pipenv pipfile powerline-docker powerline-gitstatus powerline-mem-segment powerline-status prettyprint prompt-toolkit psutil psycopg2 PTable ptyprocess py-gfm pyasn1 pycparser pycrypto Pygments pylibpcap pylint pymongo pyparsing python-dateutil pythonz-bd pytz PyYAML pyzmq redis requests requirements-parser rsa s3transfer scapy scp setuptools shutilwhich simplegeneric simplejson SimpleParse singledispatch six smmap2 sqlparse stevedore toml traitlets virtualenv virtualenv-clone virtualenvwrapper wcwidth websocket-client wheel wrapt xmltodict zope.interface"
+
+for p in $pips; do
+    pip install --upgrade $p
+done
+exit 0

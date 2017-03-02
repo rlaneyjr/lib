@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+pips="Django django-classy-tags django-debug-toolbar django-filter django-mptt django-nyt django-rest-swagger django-sekizai django-tables2 djangorestframework dnet natsort ncclient netaddr netmiko networkx sorl-thumbnail tornado trigger Twisted"
+
+for p in $pips; do
+    pip uninstall -y $p
+done
+exit 0
