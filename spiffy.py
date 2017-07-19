@@ -1,7 +1,7 @@
 import click
 import json
 import sys
-
+ 	 
 
 @click.command()
 @click.option('--file',help='JSON file.')
