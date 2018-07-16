@@ -3,6 +3,8 @@
 # This program is optimized for Python 2.7.
 # It may run on any other version with/without modifications.
 
+from __future__ import absolute_import, division, print_function
+
 import argparse
 import requests
 import json
