@@ -1,6 +1,105 @@
+#!/usr/bin/env python
+# Copyright (c) 2010-2018 Network Engineering ONE Source
+# Come visit us at https://netengone.com
+#
+# This software is provided under under a slightly modified version
+# of the Apache Software License. See the accompanying LICENSE file
+# for more information.
+#
+
+import datetime as dt
+from functools import wraps
 import logging
+import logging.config
 import os
+import signal
 import sys
+import warnings
+
+# Stops the ugly errors when hitting 'Ctrl+C'
+signal.signal(signal.SIGPIPE, signal.SIG_DFL)  # IOError: Broken pipe
+signal.signal(signal.SIGINT, signal.SIG_DFL)  # KeyboardInterrupt: Ctrl-C
+
+FORMAT = '%(asctime)s: %(levelname)s: %(lineno)d: %(message)s'
+FORMAT1 = '%(asctime)s:%(name)s:%(message)s'
+
+#log = logging.getLogger(__name__)
+#log.setLevel(logging.DEBUG)
+
+tday = dt.date.today().strftime('%m-%d-%Y')
+log_dir = '/Users/rlaney/Logs/'
+log_suffix = '.log'
+log_prefix = str(os.path.basename(__file__)).split('.')[0]
+log_name = "{}_{}{}".format(log_prefix, tday, log_suffix)
+log_file = log_dir + log_name
+no_files = str(len([n for n in os.listdir(log_dir) if n == log_name]))
+
+if not os.path.exists(log_file):
+    log_file = log_file
+else:
+    log_file = log_prefix + tday + '_' + no_files + log_suffix
+
+
+class LogWith(object):
+    '''Logging decorator that allows you to log with a specific logger.
+    '''
+    # Customize these messages
+    ENTRY_MESSAGE = 'Entering {} at {}'
+    EXIT_MESSAGE = 'Exiting {} at {}'
+
+    def __init__(self, logger=None):
+        self.logger = logging.getLogger(logger)
+        self.logger = logging.basicConfig(filename=log_file, filemode='w',
+                                          format=FORMAT, level=logging.INFO)
+
+    def __call__(self, func):
+        '''Returns a wrapper that wraps func.
+        The wrapper will log the entry and exit points of the function
+        with logging.INFO level.
+        '''
+        if not self.logger:
+            try:
+                self.logger = logging.getLogger(os.path.basename(__file__))
+            except:
+                self.logger = logging.getLogger(func.__module__)
+
+        @wraps(func)
+        def wrapper(*args, **kwds):
+            start_time = dt.datetime.now()
+            self.logger.info(self.ENTRY_MESSAGE.format(func.__name__, start_time))
+            f_result = func(*args, **kwds)
+            end_time = dt.datetime.now()
+            self.logger.info(self.EXIT_MESSAGE.format(func.__name__, end_time))
+            self.logger.info("FUNC: {} TIME: {}".format(func.__name__,
+                                                      (end_time - start_time)))
+            return f_result
+        return wrapper
+
+
+def log_event(event, objectid_attr=None, objectid_param=None):
+    #Decorator to send events to the event log
+    #You must pass in the event name, and may pass in some method of
+    #obtaining an objectid from the decorated function's parameters or
+    #return value.
+    #objectid_attr: The name of an attr on the return value, to be
+    #    extracted via getattr().
+    #objectid_param: A string, specifies the name of the (kw)arg that
+    #    should be the objectid.
+    def wrap(f):
+        @wraps(f)
+        def decorator(*args, **kwargs):
+            self = extract_param_by_name(f, args, kwargs, 'self')
+            value = f(*args, **kwargs)
+            if objectid_attr is not None:
+                event_objectids = getattr(value, objectid_attr)
+            elif objectid_param is not None:
+                event_objectids = extract_param_by_name(f, args, kwargs, objectid_param)
+            else:
+                event_objectids = None
+            self._log_event(event, event_objectids)
+            return value
+        return decorator
+    return wrap
 
 
 class Logger(logging.getLoggerClass()):
@@ -69,7 +168,11 @@ class Logger(logging.getLoggerClass()):
         :return: Path to log directory
         """
 
-        log_dir = {'darwin': '~/Library/Logs'}
+        for dirname in os.scandir():
+            if dirname in ['Log', 'log', 'Logs', 'logs']:
+                log_dir = {'darwin': dirname}
+            else:
+                log_dir = {'darwin': '~/Logs'}
         result = log_dir.get(sys.platform, '/var/log')
         return os.path.expanduser(result)
 

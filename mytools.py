@@ -14,6 +14,7 @@ from __future__ import absolute_import, division, print_function
 from getpass import getpass
 import logging
 import os
+import signal
 import sys
 import time
 
@@ -21,27 +22,27 @@ import time
 sig1 = signal.signal(signal.SIGPIPE, signal.SIG_DFL)  # IOError: Broken pipe
 sig2 = signal.signal(signal.SIGINT, signal.SIG_DFL)  # KeyboardInterrupt: Ctrl-C
 
-FORMAT1 = '%(asctime)s:%(name)s:%(message)s'
-FORMAT2 = '%(asctime)s: %(levelname)s: %(lineno)d: %(message)s'
-file_name =  os.path.basename(__file__).replace('.py', '.log')
-
-logging.basicConfig(filename=MY_REPOS, filemode='w',
-                    format=FORMAT, level=logging.INFO)
-
-logger = logging.getLogger(file_name)
-logger.setLevel(logging.DEBUG)
-
-formatter = logging.Formatter(FORMAT)
-
-file_handler = logging.FileHandler('sample.log')
-file_handler.setLevel(logging.ERROR)
-file_handler.setFormatter(formatter)
-
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(formatter)
-
-logger.addHandler(file_handler)
-logger.addHandler(stream_handler)
+#FORMAT1 = '%(asctime)s:%(name)s:%(message)s'
+#FORMAT2 = '%(asctime)s: %(levelname)s: %(lineno)d: %(message)s'
+#file_name =  os.path.basename(__file__).replace('.py', '.log')
+#
+#logging.basicConfig(filename=MY_REPOS, filemode='w',
+#                    format=FORMAT, level=logging.INFO)
+#
+#logger = logging.getLogger(file_name)
+#logger.setLevel(logging.DEBUG)
+#
+#formatter = logging.Formatter(FORMAT)
+#
+#file_handler = logging.FileHandler('sample.log')
+#file_handler.setLevel(logging.ERROR)
+#file_handler.setFormatter(formatter)
+#
+#stream_handler = logging.StreamHandler()
+#stream_handler.setFormatter(formatter)
+#
+#logger.addHandler(file_handler)
+#logger.addHandler(stream_handler)
 
 def get_input(prompt=''):
     try:
